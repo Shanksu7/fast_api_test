@@ -62,5 +62,5 @@ chmod -x startup.sh
 # Start the FastAPI app with Gunicorn (capture output)
 echo "Starting FastAPI app guvicorn..."
 send_to_discord "Starting FastAPI app with python cmd..."
-python -m uvicorn main:app --host 0.0.0.0
+#python -m uvicorn main:app --host 0.0.0.0
 send_to_discord "Finished"
