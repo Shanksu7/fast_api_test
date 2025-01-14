@@ -8,6 +8,7 @@ escape_message() {
 # Function to send message to Discord with escaped content
 send_to_discord() {
     local message=$(escape_message "$1")
+    echo $message
     current_folder=$(pwd)
     curl -H "Content-Type: application/json" \
          -X POST \
@@ -38,20 +39,17 @@ send_to_discord "$preinstall_output"
 send_to_discord "Pre-install requirements installed."
 
 # Install main requirements (capture output)
-echo "Installing main requirements..."
 send_to_discord "Installing main requirements..."
 requirements_output=$(pip install -r requirements.txt 2>&1)
 send_to_discord "$requirements_output"
 send_to_discord "Installed main requirements."
 
 # Run setup script (capture output)
-echo "Running setup script..."
 send_to_discord "Running setup script..."
 setup_output=$(python setup_script.py 2>&1)
 send_to_discord "$setup_output"
 send_to_discord "setup script done."
 
-echo "Moving to /home/site/wwwroot/..."
 send_to_discord "Moving files to /home/site/wwwroot/..."
 cp /home/site/wwwroot/app/* /home/site/wwwroot/
 cd /home/site/wwwroot/
