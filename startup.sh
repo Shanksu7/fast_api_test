@@ -53,7 +53,7 @@ send_to_discord "setup script done."
 
 echo "Moving to /home/site/wwwroot/..."
 send_to_discord "Moving files to /home/site/wwwroot/..."
-mv /home/site/wwwroot/app/* /home/site/wwwroot/
+cp /home/site/wwwroot/app/* /home/site/wwwroot/
 cd /home/site/wwwroot/
 send_to_discord "removing /home/site/wwwroot/app"
 rm -r app
