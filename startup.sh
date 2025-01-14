@@ -21,20 +21,24 @@ if ! command -v jq &>/dev/null; then
     apt-get update && apt-get install -y jq
 fi
 
+send_to_discord "Installing apt list"
+echo -e "deb http://archive.debian.org/debian stretch main contrib non-free\ndeb http://archive.debian.org/debian-security stretch/updates main contrib non-free" | tee /etc/apt/sources.list > /dev/null
+apt-get update
+
+send_to_discord "Installing Git"
+apt-get install git
+
+send_to_discord "Cloning repo https://github.com/Shanksu7/fast_api_test into folder app..."
+git clone https://github.com/Shanksu7/fast_api_test app
+
+cd app
+
 # Send initial notification to Discord
 send_to_discord "Starting FastAPI app deployment... Pre-Installing requirements"
 
 # Get and send the current folder path to Discord
 current_folder=$(pwd)
 send_to_discord "Current folder: $current_folder"
-
-# Set up virtual environment
-#echo "Setting up virtual environment..."
-#send_to_discord "Setting up virtual environment..."
-#python3 -m venv venv
-#source venv/bin/activate
-
-#cd app
 
 # Install pre-install requirements (capture output)
 echo "Installing pre-install requirements..."
@@ -55,7 +59,6 @@ setup_output=$(python setup_script.py 2>&1)
 send_to_discord "$setup_output"
 
 # Start the FastAPI app with Gunicorn (capture output)
-#echo "Starting FastAPI app..."
-#send_to_discord "Starting FastAPI app..."
-#gunicorn_output=$(exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.application:app 2>&1)
-#send_to_discord "$gunicorn_output"
+echo "Starting FastAPI app..."
+send_to_discord "Starting FastAPI app..."
+exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker application:app
