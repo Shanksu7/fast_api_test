@@ -15,4 +15,14 @@ send_to_discord() {
          "https://discord.com/api/webhooks/1328763919363477524/CnA6ZInh1EtZlu8oXp3kfFhjAb_uqViic8TfLNbmrjwHXPkOmkm9ZkM6JRGh7-Hc4Y2H"
 }
 
-send_to_discord "I ran"
+send_to_discord "I started"
+
+# Run ss command and capture output
+ss_output=$(ss -tulnp | grep :8000)
+
+# Check if output exists (i.e., if port 8000 is being used)
+if [[ -z "$ss_output" ]]; then
+    send_to_discord "Port 8000 is not in use."
+else
+    send_to_discord "The following processes are using port 8000:\n$ss_output"
+fi
