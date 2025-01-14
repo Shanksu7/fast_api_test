@@ -1,13 +1,25 @@
 #!/bin/bash
 
-# Function to send message to Discord
+# Function to send a message to Discord
 send_to_discord() {
-    local message=$1
-    curl -H "Content-Type: application/json" -X POST -d "{\"content\":\"$message\"}" "https://discord.com/api/webhooks/1328763919363477524/CnA6ZInh1EtZlu8oXp3kfFhjAb_uqViic8TfLNbmrjwHXPkOmkm9ZkM6JRGh7-Hc4Y2H"
+    local message="$1"
+    json_message=$(jq -Rsa --arg msg "$message" '{"content": $msg}')
+    curl -H "Content-Type: application/json" -X POST -d "$json_message" \
+        "https://discord.com/api/webhooks/1328763919363477524/CnA6ZInh1EtZlu8oXp3kfFhjAb_uqViic8TfLNbmrjwHXPkOmkm9ZkM6JRGh7-Hc4Y2H"
 }
+
+# Ensure jq is available
+if ! command -v jq &>/dev/null; then
+    echo "jq is required but not installed. Installing jq..."
+    apt-get update && apt-get install -y jq
+fi
 
 # Send initial notification to Discord
 send_to_discord "Starting FastAPI app deployment... Pre-Installing requirements"
+
+# Get and send the current folder path to Discord
+current_folder=$(pwd)
+send_to_discord "Current folder: $current_folder"
 
 # Set up virtual environment
 echo "Setting up virtual environment..."
@@ -15,28 +27,28 @@ send_to_discord "Setting up virtual environment..."
 python3 -m venv venv
 source venv/bin/activate
 
-# Install pre-install requirements (and capture output)
+cd app
+
+# Install pre-install requirements (capture output)
 echo "Installing pre-install requirements..."
 send_to_discord "Installing pre-install requirements..."
-pip install -r preinstall-requirements.txt 2>&1 | tee preinstall_output.log
-send_to_discord "$(cat preinstall_output.log)"
+preinstall_output=$(pip install -r preinstall-requirements.txt 2>&1)
+send_to_discord "$preinstall_output"
 
-# Send Discord notification about installing main requirements
+# Install main requirements (capture output)
 echo "Installing main requirements..."
 send_to_discord "Installing main requirements..."
-pip install -r requirements.txt 2>&1 | tee requirements_output.log
-send_to_discord "$(cat requirements_output.log)"
+requirements_output=$(pip install -r requirements.txt 2>&1)
+send_to_discord "$requirements_output"
 
-# Run setup script (and capture output)
+# Run setup script (capture output)
 echo "Running setup script..."
 send_to_discord "Running setup script..."
-python setup_script.py 2>&1 | tee setup_output.log
-send_to_discord "$(cat setup_output.log)"
+setup_output=$(python setup_script.py 2>&1)
+send_to_discord "$setup_output"
 
-# Send Discord notification about app start
+# Start the FastAPI app with Gunicorn (capture output)
 echo "Starting FastAPI app..."
 send_to_discord "Starting FastAPI app..."
-
-# Start the FastAPI app with Gunicorn and capture output
-exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app 2>&1 | tee gunicorn_output.log
-send_to_discord "$(cat gunicorn_output.log)"
+gunicorn_output=$(exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app 2>&1)
+send_to_discord "$gunicorn_output"
