@@ -1,7 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-# More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
-
 name: Build and deploy Python app to Azure Web App - testingml
 
 on:
@@ -26,10 +22,16 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-      
+
       - name: Install dependencies
         run: pip install -r requirements.txt
-        
+
+      - name: Install pre-install dependencies
+        run: pip install -r preinstall-requirements.txt
+
+      - name: Run setup script
+        run: python setup_script.py
+
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
       - name: Zip artifact for deployment
@@ -61,7 +63,6 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -75,4 +76,7 @@ jobs:
         with:
           app-name: 'testingml'
           slot-name: 'Production'
-          
+
+      - name: Set Startup Command in Azure
+        run: |
+          az webapp config set --resource-group api-tutienda_group --name testingml --startup-file ./startup.sh
