@@ -1,11 +1,17 @@
 #!/bin/bash
 
 # Function to send a message to Discord
+escape_message() {
+    echo "$1" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/$/\\n/g'
+}
+
+# Function to send message to Discord with escaped content
 send_to_discord() {
-    local message="$1"
-    json_message=$(jq -Rsa --arg msg "$message" '{"content": $msg}')
-    curl -H "Content-Type: application/json" -X POST -d "$json_message" \
-        "https://discord.com/api/webhooks/1328763919363477524/CnA6ZInh1EtZlu8oXp3kfFhjAb_uqViic8TfLNbmrjwHXPkOmkm9ZkM6JRGh7-Hc4Y2H"
+    local message=$(escape_message "$1")
+    curl -H "Content-Type: application/json" \
+         -X POST \
+         -d "{\"content\":\"$message\"}" \
+         "https://discord.com/api/webhooks/1328763919363477524/CnA6ZInh1EtZlu8oXp3kfFhjAb_uqViic8TfLNbmrjwHXPkOmkm9ZkM6JRGh7-Hc4Y2H"
 }
 
 # Ensure jq is available
