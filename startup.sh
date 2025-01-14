@@ -55,7 +55,7 @@ setup_output=$(python setup_script.py 2>&1)
 send_to_discord "$setup_output"
 
 # Start the FastAPI app with Gunicorn (capture output)
-echo "Starting FastAPI app..."
-send_to_discord "Starting FastAPI app..."
-gunicorn_output=$(exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app 2>&1)
-send_to_discord "$gunicorn_output"
+#echo "Starting FastAPI app..."
+#send_to_discord "Starting FastAPI app..."
+#gunicorn_output=$(exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.application:app 2>&1)
+#send_to_discord "$gunicorn_output"
