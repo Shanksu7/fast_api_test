@@ -58,8 +58,9 @@ send_to_discord "Moving to /home/site/wwwroot/..."
 mv /home/site/wwwroot/app/* /home/site/wwwroot/
 cd /home/site/wwwroot/
 rm -r app
+chmod -x startup.sh
 # Start the FastAPI app with Gunicorn (capture output)
-#echo "Starting FastAPI app..."
-#send_to_discord "Starting FastAPI app..."
-#exec gunicorn -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 application:app
+echo "Starting FastAPI app..."
+send_to_discord "Starting FastAPI app..."
+exec gunicorn -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 application:app
 send_to_discord "Finished"
