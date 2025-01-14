@@ -10,6 +10,7 @@ send_to_discord() {
 
 # Ensure jq is available
 if ! command -v jq &>/dev/null; then
+    send_to_discord "jq is required but not installed. Installing jq..."
     echo "jq is required but not installed. Installing jq..."
     apt-get update && apt-get install -y jq
 fi
