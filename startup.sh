@@ -8,9 +8,10 @@ escape_message() {
 # Function to send message to Discord with escaped content
 send_to_discord() {
     local message=$(escape_message "$1")
+    current_folder=$(pwd)
     curl -H "Content-Type: application/json" \
          -X POST \
-         -d "{\"content\":\"$message\"}" \
+         -d "{\"content\":\"$current_folder : $message\"}" \
          "https://discord.com/api/webhooks/1328763919363477524/CnA6ZInh1EtZlu8oXp3kfFhjAb_uqViic8TfLNbmrjwHXPkOmkm9ZkM6JRGh7-Hc4Y2H"
 }
 
