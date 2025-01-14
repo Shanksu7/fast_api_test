@@ -29,12 +29,12 @@ current_folder=$(pwd)
 send_to_discord "Current folder: $current_folder"
 
 # Set up virtual environment
-echo "Setting up virtual environment..."
-send_to_discord "Setting up virtual environment..."
-python3 -m venv venv
-source venv/bin/activate
+#echo "Setting up virtual environment..."
+#send_to_discord "Setting up virtual environment..."
+#python3 -m venv venv
+#source venv/bin/activate
 
-cd app
+#cd app
 
 # Install pre-install requirements (capture output)
 echo "Installing pre-install requirements..."
