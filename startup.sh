@@ -55,8 +55,9 @@ send_to_discord "$setup_output"
 
 echo "Moving to /home/site/wwwroot/..."
 send_to_discord "Moving to /home/site/wwwroot/..."
-mv * /home/site/wwwroot/
-
+mv /home/site/wwwroot/app/* /home/site/wwwroot/
+cd /home/site/wwwroot/
+rm -r app
 # Start the FastAPI app with Gunicorn (capture output)
 #echo "Starting FastAPI app..."
 #send_to_discord "Starting FastAPI app..."
