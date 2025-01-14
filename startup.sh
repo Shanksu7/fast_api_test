@@ -70,7 +70,7 @@ ss_output=$(ss -tulnp | grep :8000)
 # Check if output exists (i.e., if port 8000 is being used)
 if [[ -z "$ss_output" ]]; then
     send_to_discord "Port 8000 is not in use."
-    exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app
+    exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker app:app
 else
     send_to_discord "The following processes are using port 8000:\n$ss_output"
 fi
