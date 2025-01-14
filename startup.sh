@@ -59,8 +59,18 @@ send_to_discord "removing /home/site/wwwroot/app"
 rm -r app
 send_to_discord "Giving execution rights to startup.sh"
 chmod -x startup.sh
+chmod -x startup2.sh
 # Start the FastAPI app with Gunicorn (capture output)
-echo "Starting FastAPI app guvicorn..."
-send_to_discord "Starting FastAPI app with python cmd..."
+#echo "Starting FastAPI app guvicorn..."
+#send_to_discord "Starting FastAPI app with python cmd..."
 #python -m uvicorn main:app --host 0.0.0.0
+
+ss_output=$(ss -tulnp | grep :8000)
+
+# Check if output exists (i.e., if port 8000 is being used)
+if [[ -z "$ss_output" ]]; then
+    send_to_discord "Port 8000 is not in use."
+else
+    send_to_discord "The following processes are using port 8000:\n$ss_output"
+fi
 send_to_discord "Finished"
